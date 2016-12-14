@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redux", "Redux\Redux.csproj", "{A15D3F17-691F-48DF-9078-27DCDE7141EB}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redux.DevTools", "Redux.DevTools\Redux.DevTools.csproj", "{6C83C892-15EA-4B7C-B7E4-87BD104BF444}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redux.DevTools.WPF", "Redux.DevTools.WPF\Redux.DevTools.WPF.csproj", "{37955967-CC13-4E89-8A84-8270E34C56CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redux.Mvvm", "Redux.Mvvm\Redux.Mvvm.csproj", "{A5861743-E088-41B2-8E36-4FE1418A3B13}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,6 +107,22 @@ Global
 		{37955967-CC13-4E89-8A84-8270E34C56CE}.Release|x64.Build.0 = Release|Any CPU
 		{37955967-CC13-4E89-8A84-8270E34C56CE}.Release|x86.ActiveCfg = Release|Any CPU
 		{37955967-CC13-4E89-8A84-8270E34C56CE}.Release|x86.Build.0 = Release|Any CPU
+		{A5861743-E088-41B2-8E36-4FE1418A3B13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5861743-E088-41B2-8E36-4FE1418A3B13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5861743-E088-41B2-8E36-4FE1418A3B13}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{A5861743-E088-41B2-8E36-4FE1418A3B13}.Debug|ARM.Build.0 = Debug|Any CPU
+		{A5861743-E088-41B2-8E36-4FE1418A3B13}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A5861743-E088-41B2-8E36-4FE1418A3B13}.Debug|x64.Build.0 = Debug|Any CPU
+		{A5861743-E088-41B2-8E36-4FE1418A3B13}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A5861743-E088-41B2-8E36-4FE1418A3B13}.Debug|x86.Build.0 = Debug|Any CPU
+		{A5861743-E088-41B2-8E36-4FE1418A3B13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5861743-E088-41B2-8E36-4FE1418A3B13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5861743-E088-41B2-8E36-4FE1418A3B13}.Release|ARM.ActiveCfg = Release|Any CPU
+		{A5861743-E088-41B2-8E36-4FE1418A3B13}.Release|ARM.Build.0 = Release|Any CPU
+		{A5861743-E088-41B2-8E36-4FE1418A3B13}.Release|x64.ActiveCfg = Release|Any CPU
+		{A5861743-E088-41B2-8E36-4FE1418A3B13}.Release|x64.Build.0 = Release|Any CPU
+		{A5861743-E088-41B2-8E36-4FE1418A3B13}.Release|x86.ActiveCfg = Release|Any CPU
+		{A5861743-E088-41B2-8E36-4FE1418A3B13}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

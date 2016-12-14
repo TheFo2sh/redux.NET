@@ -9,10 +9,13 @@ namespace Redux
 
     public delegate Func<Dispatcher, Dispatcher> Middleware<TState>(IStore<TState> store);
 
-    public interface IStore<TState> : IObservable<TState>
+    public interface IStore
     {
         IAction Dispatch(IAction action);
 
+    }
+    public interface IStore<TState> : IStore,IObservable<TState>
+    {
         TState GetState();
     }
         
