@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reactive.Subjects;
 
 namespace MVRX.Core
@@ -10,12 +11,12 @@ namespace MVRX.Core
         private readonly Reducer<TState> _reducer;
         private readonly ReplaySubject<TState> _stateSubject = new ReplaySubject<TState>(1);
         private TState _lastState;
-
+        private readonly Stack<TState> _history;
         public Store(Reducer<TState> reducer, TState initialState = default(TState), params Middleware<TState>[] middlewares)
         {
             _reducer = reducer;
             _dispatcher = ApplyMiddlewares(middlewares);
-
+            _history=new Stack<TState>();
             _lastState = initialState;
             _stateSubject.OnNext(_lastState);
         }
@@ -48,11 +49,19 @@ namespace MVRX.Core
 
         private IAction InnerDispatch(IAction action)
         {
+           
             lock (_syncRoot)
             {
-                _lastState = _reducer(_lastState, action);
+                _lastState = _reducer.Reduce(_lastState, action);
+                if (!_reducer.Validate(_lastState, action))
+                {
+                    _lastState = _history.Pop();
+                    _stateSubject.OnError( new InvalidOperationException(
+                        $"Cannot apply action {action} object state will continue to be {_lastState}"));
+                }
             }
             _stateSubject.OnNext(_lastState);
+            _history.Push(_lastState);
             return action;
         }
     }

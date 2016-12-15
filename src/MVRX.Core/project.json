@@ -5,22 +5,24 @@
   "tags": [ "" ],
   "projectUrl": "",
   "licenseUrl": "",
-  "runtimes": {
-    "win10-arm": { },
-    "win10-arm-aot": { },
-    "win10-x86": { },
-    "win10-x86-aot": { },
-    "win10-x64": { },
-    "win10-x64-aot": { }
-  },
+
   "dependencies": {
     "System.Reactive.Linq": "3.0.0",
-    "Autofac": "4.2.1" 
+    "Autofac": "4.2.1"
 
   },
   "frameworks": {
-    "net46": { }
+  
+    "uap10.0": {
+      "dependencies": {
+        "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.2"
+
+      }
+    }
+
+
   }
+ 
 }
   
 

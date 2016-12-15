@@ -25,6 +25,12 @@ namespace MVRX.Core.Loaders
                 .SingleInstance()
                 .AsSelf()
                 .AsImplementedInterfaces();
+
+            builder.RegisterTypes(enumerable.ToArray())
+               .AssignableTo<IReducer>()
+               .As<IReducer>()
+               .AsImplementedInterfaces();
+
             base.Load(builder);
         }
     }

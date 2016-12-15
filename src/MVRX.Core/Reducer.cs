@@ -1,4 +1,11 @@
 ﻿namespace MVRX.Core
 {
-    public delegate TState Reducer<TState>(TState previousState, IAction action);
+    public interface IReducer { }
+    public abstract class Reducer<TState>:IReducer
+    {
+        public abstract TState Reduce(TState previousState, IAction action);
+        public abstract bool Validate(TState previousState, IAction action);
+
+       
+    }
 }
