@@ -6,6 +6,9 @@ we are plainning to do some deviations from the original project as our goal is 
 - Integration with Autofac
 - Supporting FSM per object
 - Supporting undo/redo functionality for each object
+- Define actions / mapping actions to actions
+-- Visual tool extension for visualization
+
 
 # Redux.NET
 
