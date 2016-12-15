@@ -1,4 +1,4 @@
-#This is a frog of the original project
+#This is a fork of the original project
 we are plainning to do some deviations from the original project as our goal is to provide a more complete framework that utilize the power of mvvm and the consistancy of flux 
 
 ##road map
@@ -7,7 +7,7 @@ we are plainning to do some deviations from the original project as our goal is 
 - Supporting FSM per object
 - Supporting undo/redo functionality for each object
 - Define actions / mapping actions to actions
--- Visual tool extension for visualization
+- - Visual tool extension for visualization
 
 
 # Redux.NET
