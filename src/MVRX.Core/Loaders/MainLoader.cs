@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Autofac;
+using MVRX.Core.Commands;
 using Module = Autofac.Module;
 
 namespace MVRX.Core.Loaders
@@ -30,6 +32,12 @@ namespace MVRX.Core.Loaders
                .AssignableTo<IReducer>()
                .As<IReducer>()
                .AsImplementedInterfaces();
+
+            builder.RegisterTypes(enumerable.ToArray())
+              .AssignableTo<ICommand>()
+              .AsClosedTypesOf(typeof(ActionCommand<>))
+              .AsImplementedInterfaces();
+
 
             base.Load(builder);
         }
