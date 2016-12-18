@@ -8,10 +8,21 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Background="Beige">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="Beige">
             <TextBlock Text="{Binding Count}"/>
             <Button Command="{Binding IncrementAction}" Content="Increment" CommandParameter="5" />
             <Button Command="{Binding DecrementAction}" Content="Decrement"/>
+
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Background="Beige">
+            <TextBlock Text="{Binding UserStatus}"/>
+            <Button Command="{Binding SetUserActiveAction}" Content="Active" />
+            <Button Command="{Binding SetUserPendingAction}" Content="Pending"/>
 
         </StackPanel>
     </Grid>

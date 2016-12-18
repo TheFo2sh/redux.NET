@@ -3,7 +3,9 @@
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.0-beta2",
     "PropertyChanged.Fody": "1.52.1",
     "Autofac": "4.2.1",
-    "System.Reactive.Linq": "3.0.0"
+    "System.Reactive.Linq": "3.0.0",
+    "Newtonsoft.Json": "9.0.1"
+
   },
   "frameworks": {
     "uap10.0": {}

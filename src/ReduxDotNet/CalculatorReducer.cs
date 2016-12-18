@@ -20,7 +20,7 @@ namespace ReduxDotNet
             return state;
         }
 
-        public override bool Validate(int previousState, IAction action)
+        public override bool Validate(int nextState, int previousState, IAction action)
         {
             return previousState < 15;
         }

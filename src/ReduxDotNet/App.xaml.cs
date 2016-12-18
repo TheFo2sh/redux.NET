@@ -5,6 +5,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using MVRX.Core;
+using ReduxDotNet.Model;
 
 namespace ReduxDotNet
 {
@@ -14,6 +15,8 @@ namespace ReduxDotNet
     sealed partial class App : Application
     {
         public static IStore<int> CounterStore { get; private set; }
+        public static IStore<User> UserStore { get; private set; }
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -25,7 +28,9 @@ namespace ReduxDotNet
             CounterStore = 
                 new Store<int>(reducer: new CalculatorReducer(),
                 initialState: 0);
-            
+            UserStore =
+             new Store<User>(reducer: new UserProfileReducer(),
+             initialState: new User());
         }
 
         /// <summary>

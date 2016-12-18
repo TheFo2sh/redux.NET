@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using Newtonsoft.Json;
 
 namespace MVRX.Core.Commands
 {
@@ -26,7 +27,8 @@ namespace MVRX.Core.Commands
       
         public  bool CanExecute(object parameter)
         {
-            return _store.IsValid((CreateInstanse(parameter)));
+            return 
+             _store.IsValid((CreateInstanse(JsonConvert.DeserializeObject(JsonConvert.SerializeObject(parameter)))));
         }
 
         public  void Execute(object parameter)

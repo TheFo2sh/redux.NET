@@ -18,9 +18,10 @@ namespace MVRX.Core
         {
             _reducer = reducer;
             _dispatcher = ApplyMiddlewares(middlewares);
-            _history=new Stack<TState>();
+            _history=new Stack<TState>() ;
             _lastState = initialState;
             _actionCommands=new List<IActionCommand>();
+            _history.Push(initialState);
             _stateSubject.OnNext(_lastState);
         }
 
@@ -31,8 +32,8 @@ namespace MVRX.Core
 
         public bool IsValid(IAction action)
         {
-            var testState = _reducer.Reduce(_lastState, action);
-            return _reducer.Validate(testState, action);
+            var newState = _reducer.Reduce(_lastState, action);
+            return _reducer.Validate(_lastState,newState, action);
         }
 
         public void WatchCommand(IActionCommand command)
@@ -67,7 +68,7 @@ namespace MVRX.Core
             lock (_syncRoot)
             {
                 _lastState = _reducer.Reduce(_lastState, action);
-                if (!_reducer.Validate(_lastState, action))
+                if (!_reducer.Validate(_history.Peek(),_lastState, action))
                 {
                     _lastState = _history.Pop();
                     _stateSubject.OnError( new InvalidOperationException(
@@ -76,6 +77,7 @@ namespace MVRX.Core
             }
             _stateSubject.OnNext(_lastState);
             _history.Push(_lastState);
+           
             foreach (var actionCommand in _actionCommands)
             {
                 actionCommand.RefreshState();

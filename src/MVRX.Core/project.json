@@ -8,7 +8,8 @@
 
   "dependencies": {
     "System.Reactive.Linq": "3.0.0",
-    "Autofac": "4.2.1"
+    "Autofac": "4.2.1",
+    "Newtonsoft.Json": "9.0.1" 
 
   },
   "frameworks": {
