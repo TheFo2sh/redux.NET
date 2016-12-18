@@ -22,7 +22,7 @@ namespace ReduxDotNet.Model
             var approvedStateFlow = new State(UserProfileStates.Approved);
            // approvedStateFlow.Next = new List<State> { new State(UserProfileStates.Pending)};
             pendingState.Next=new List<State> { approvedStateFlow};
-            newState.Next = new List<State> { pendingState };
+            newState.Next = new List<State> { pendingState ,approvedStateFlow};
 
             _stateFlow = new StateFlow(newState);
         }

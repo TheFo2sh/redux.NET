@@ -42,11 +42,11 @@ namespace MVRX.Core
 
         public void SetCurrentState(Enum state,bool isTimeTravel=false)
         {
-            CurrentState =  traverse(new List<State>() { CurrentState },state);
+            CurrentState =  Traverse(new List<State>() { CurrentState },state);
           
         }
 
-        private State traverse(List<State> root, Enum state)
+        private State Traverse(List<State> root, Enum state)
         {
             foreach (var cursor in root)
             {
@@ -58,16 +58,24 @@ namespace MVRX.Core
                 if(cursor.Next==null)
                     continue;
 
+                var lastbranchIndex = StateHistory.Count - 1;
+                var result = cursor.Next.FirstOrDefault(item => Equals(item.GetState(), state));
+                if (result != null)
+                {
+                    StateHistory.Add(result);
+                    return result;
+                }
                 foreach (var item in cursor.Next)
                 {
                     StateHistory.Add(item);
 
                     if (Equals(item.GetState(), state))
                         return item;
-                    var innerresult= traverse(cursor.Next, state);
+                    var innerresult= Traverse(cursor.Next, state);
                     if (innerresult != null)
                         return innerresult;
                 }
+                StateHistory.RemoveRange(lastbranchIndex, StateHistory.Count - lastbranchIndex - 1);
             }
             return null;
         }
