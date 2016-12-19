@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.AllJoyn;
 using MVRX.Core;
+using MVRX.Core.Machines;
 using Newtonsoft.Json;
 using PropertyChanged;
 
@@ -12,31 +13,20 @@ namespace ReduxDotNet.Model
 {
     public enum UserProfileStates { New, Pending, Approved }
 
-    public class UserProfileFlow
+    public class UserProfileFlow: StateFlow
     {
-        private readonly StateFlow _stateFlow;
-        public UserProfileFlow()
+        public UserProfileFlow():base(new State(UserProfileStates.New))
         {
-            var newState = new State(UserProfileStates.New);
+            //this. = new State(UserProfileStates.New);
             var pendingState = new State(UserProfileStates.Pending);
             var approvedStateFlow = new State(UserProfileStates.Approved);
            // approvedStateFlow.Next = new List<State> { new State(UserProfileStates.Pending)};
             pendingState.Next=new List<State> { approvedStateFlow};
-            newState.Next = new List<State> { pendingState ,approvedStateFlow};
+           this.SetNextStates( pendingState );
 
-            _stateFlow = new StateFlow(newState);
         }
 
 
-        public void SetCurrentState(UserProfileStates value, bool isTimeTravel=false)
-        {
-            _stateFlow.SetCurrentState(value, isTimeTravel);
-        }
-
-        public bool ValidateAction(UserProfileStates previousStateProfileStates, UserProfileStates newStateProfileStates)
-        {
-            return _stateFlow.ValidateAction(previousStateProfileStates, newStateProfileStates);
-        }
     }
    public class User
     {
@@ -63,16 +53,15 @@ namespace ReduxDotNet.Model
         }
     }
 
-    public class UserProfileReducer : Reducer<User>, IStateObject<UserProfileFlow>
+    public class UserProfileReducer : StateMachine<User, UserProfileFlow>
     {
-        public UserProfileFlow StateFlowManager { get; set; }
-        public UserProfileReducer()
+        public UserProfileReducer() : base("ProfileStates")
         {
-            StateFlowManager=new UserProfileFlow();
         }
+
         public override User Reduce(User previousState, IAction action)
         {
-            
+
             var user = previousState.Clone();
             if (action is SetUserActiveAction)
             {
@@ -90,15 +79,6 @@ namespace ReduxDotNet.Model
             return previousState;
         }
 
-        public override bool Validate(User previousState, User newState, IAction action)
-        {
-            bool validateAction;
-           
-                validateAction = StateFlowManager.ValidateAction(newState.ProfileStates,  previousState.ProfileStates);
-            
-            return validateAction;
-            
-              
-        }
+
     }
 }
