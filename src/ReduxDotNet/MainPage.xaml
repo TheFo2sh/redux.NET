@@ -11,6 +11,8 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="Beige">
             <TextBlock Text="{Binding Count}"/>
@@ -23,6 +25,13 @@
             <TextBlock Text="{Binding UserStatus}"/>
             <Button Command="{Binding SetUserActiveAction}" Content="Active" />
             <Button Command="{Binding SetUserPendingAction}" Content="Pending"/>
+
+        </StackPanel>
+        <StackPanel Grid.Column="2">
+            <TextBox x:Name="inputValue" Text="{Binding FactorialInput , Mode=TwoWay}"></TextBox>
+            <TextBlock Name="outPutValue" Text="{Binding FactorialResult}"></TextBlock>
+            <Button Command="{Binding CalculateFactorialAction}" Content="Calculate" CommandParameter="{Binding FactorialInput}" />
+            <Button Command="{Binding SearchAction}" Content="Search" CommandParameter="{Binding SearchOperation}" />
 
         </StackPanel>
     </Grid>

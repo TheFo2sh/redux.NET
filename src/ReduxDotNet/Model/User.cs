@@ -25,7 +25,7 @@ namespace ReduxDotNet.Model
            this.SetNextStates( pendingState );
 
         }
-
+        
 
     }
    public class User

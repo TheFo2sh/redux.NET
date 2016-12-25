@@ -2,5 +2,7 @@
 
 namespace ReduxDotNet
 {
-    public class DecrementAction : IAction { }
+    public class DecrementAction : IAction {
+        public object Input { get; set; }
+    }
 }

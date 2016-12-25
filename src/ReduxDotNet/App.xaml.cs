@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
@@ -14,6 +15,9 @@ namespace ReduxDotNet
     /// </summary>
     sealed partial class App : Application
     {
+        public static IStore<BigInteger?> FactorialStore { get; private set; }
+        public static IStore<int?> BinarySearchStore { get; private set; }
+
         public static IStore<int> CounterStore { get; private set; }
         public static IStore<User> UserStore { get; private set; }
 
@@ -31,6 +35,8 @@ namespace ReduxDotNet
             UserStore =
              new Store<User>(reducer: new UserProfileReducer(),
              initialState: new User());
+            FactorialStore=new Store<BigInteger?>(new FibonacciReducer(),0);
+            BinarySearchStore= new Store<int?>(new BinarySearchReducer(), 0);
         }
 
         /// <summary>

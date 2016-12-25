@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 using System.Windows.Input;
 using Newtonsoft.Json;
 
@@ -41,7 +43,7 @@ namespace MVRX.Core.Commands
         private static IAction CreateInstanse(object parameter)
         {
             object instance;
-            if (parameter != null)
+            if (typeof(T).GetConstructors().Any(c=>c.GetParameters().Any()))
             {
                 instance = Activator.CreateInstance(typeof(T), parameter);
             }

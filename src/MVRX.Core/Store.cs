@@ -32,8 +32,15 @@ namespace MVRX.Core
 
         public bool IsValid(IAction action)
         {
-            var newState = _reducer.Reduce(_lastState, action);
-            return _reducer.Validate(_lastState,newState, action);
+            try
+            {
+                var newState = _reducer.Reduce(_lastState, action);
+                return _reducer.Validate(_lastState,newState, action);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public void WatchCommand(IActionCommand command)
@@ -64,23 +71,30 @@ namespace MVRX.Core
 
         private IAction InnerDispatch(IAction action)
         {
-           
-            lock (_syncRoot)
+
+            try
             {
-                _lastState = _reducer.Reduce(_lastState, action);
-                if (!_reducer.Validate(_history.Peek(),_lastState, action))
+                lock (_syncRoot)
                 {
-                    _lastState = _history.Pop();
-                    _stateSubject.OnError( new InvalidOperationException(
-                        $"Cannot apply action {action} object state will continue to be {_lastState}"));
+                    _lastState = _reducer.Reduce(_lastState, action);
+                    if (!_reducer.Validate(_history.Peek(),_lastState, action))
+                    {
+                        _lastState = _history.Pop();
+                        _stateSubject.OnError( new InvalidOperationException(
+                            $"Cannot apply action {action} object state will continue to be {_lastState}"));
+                    }
+                }
+                _stateSubject.OnNext(_lastState);
+                _history.Push(_lastState);
+           
+                foreach (var actionCommand in _actionCommands)
+                {
+                    actionCommand.RefreshState();
                 }
             }
-            _stateSubject.OnNext(_lastState);
-            _history.Push(_lastState);
-           
-            foreach (var actionCommand in _actionCommands)
+            catch (Exception ex)
             {
-                actionCommand.RefreshState();
+                _stateSubject.OnError(ex);
             }
             return action;
         }

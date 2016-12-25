@@ -3,6 +3,6 @@
     
     public interface IAction
     {
-
+        object Input { get; set; }
     }
 }

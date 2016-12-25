@@ -11,7 +11,7 @@ namespace ReduxDotNet
             var state = previousState;
             if (action is IncrementAction)
             {
-                return state + ((IncrementAction)action).Quantity;
+                return state + (int)((IncrementAction)action).Input;
             }
             if (action is DecrementAction)
             {

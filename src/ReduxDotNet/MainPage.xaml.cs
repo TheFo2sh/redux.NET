@@ -11,8 +11,9 @@ namespace ReduxDotNet
     {
         public MainPage()
         {
-            this.InitializeComponent();
             this.DataContext = new MainPageViewModel();
+
+            this.InitializeComponent();
         }
     }
 }
