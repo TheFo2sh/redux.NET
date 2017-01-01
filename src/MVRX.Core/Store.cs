@@ -5,7 +5,7 @@ using MVRX.Core.Commands;
 
 namespace MVRX.Core
 {
-    public class Store<TState> : IStore<TState>
+    public class Store<TState,TReducer> : IStore<TState,TReducer> where TReducer : Reducer<TState>
     {
         private readonly object _syncRoot = new object();
         private readonly Dispatcher _dispatcher;
@@ -14,7 +14,7 @@ namespace MVRX.Core
         private TState _lastState;
         private readonly Stack<TState> _history;
         private readonly IList<IActionCommand> _actionCommands;
-        public Store(Reducer<TState> reducer, TState initialState = default(TState), params Middleware<TState>[] middlewares)
+        public Store(TReducer reducer, TState initialState = default(TState), params Middleware<TState,TReducer>[] middlewares)
         {
             _reducer = reducer;
             _dispatcher = ApplyMiddlewares(middlewares);
@@ -23,6 +23,11 @@ namespace MVRX.Core
             _actionCommands=new List<IActionCommand>();
             _history.Push(initialState);
             _stateSubject.OnNext(_lastState);
+        }
+
+        public void VariableSubscribe(Action<object> obj)
+        {
+            this.Subscribe(s => obj.Invoke(s));
         }
 
         public IAction Dispatch(IAction action)
@@ -59,7 +64,7 @@ namespace MVRX.Core
                 .Subscribe(observer);
         }
 
-        private Dispatcher ApplyMiddlewares(params Middleware<TState>[] middlewares)
+        private Dispatcher ApplyMiddlewares(params Middleware<TState,TReducer>[] middlewares)
         {
             Dispatcher dispatcher = InnerDispatch;
             foreach (var middleware in middlewares)
@@ -98,5 +103,12 @@ namespace MVRX.Core
             }
             return action;
         }
+
+        public static implicit operator TState(Store<TState, TReducer> state)
+        {
+            return state.GetState();
+        }
+
+
     }
 }

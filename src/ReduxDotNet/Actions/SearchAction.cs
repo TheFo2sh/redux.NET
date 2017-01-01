@@ -1,7 +1,7 @@
 ﻿using MVRX.Core;
 using Newtonsoft.Json;
 
-namespace ReduxDotNet
+namespace ReduxDotNet.Actions
 {
     public class SearchAction : IAction
     {

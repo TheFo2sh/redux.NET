@@ -2,7 +2,7 @@
 using System.Numerics;
 using MVRX.Core.Machines;
 
-namespace ReduxDotNet
+namespace ReduxDotNet.Reducers
 {
     public class FibonacciReducer : DynamicCalculatorMachine<BigInteger, BigInteger?>
     {
@@ -14,6 +14,11 @@ namespace ReduxDotNet
         public override BigInteger? Divide(BigInteger input)
         {
             return Calculate(input -1)+ Calculate(input - 1);
+        }
+
+        public override BigInteger Partion(BigInteger partionSpace, BigInteger input)
+        {
+            return partionSpace;
         }
     }
 }

@@ -1,27 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using MVRX.Core;
 using MVRX.Core.Machines;
 
-namespace ReduxDotNet
+namespace ReduxDotNet.Reducers
 {
-    public class Operation
-    {
-        public int Target { get; set; }
-        public List<int> InputArray { get; set; }
-
-        public Operation()
-        {
-            Target=new int();
-            InputArray=new List<int>();
-        }
-
-        public override string ToString()
-        {
-            return InputArray.Count.ToString();
-        }
-    }
     public class BinarySearchReducer : DynamicCalculatorMachine<Operation, int?>
     {
         public BinarySearchReducer() : base(n => n.InputArray.Count/2)
@@ -34,11 +19,16 @@ namespace ReduxDotNet
             return true;
         }
 
+        public override Operation Partion(BigInteger partionSpace, Operation input)
+        {
+           return new Operation(input.Target,input.InputArray.Skip((int)partionSpace).ToList());
+        }
+
         public override int? Checker(Dictionary<Operation, int?> dictionary, Operation input)
         {
-            var isFound = dictionary.Any(x => x.Key.InputArray.Count() == input.InputArray.Count());
+            var isFound = dictionary.Any(x => x.Key.Equals(input));
             if (isFound)
-                return dictionary.First(x => x.Key.InputArray.Count() == input.InputArray.Count()).Value;
+                return dictionary.First(x => x.Key.Equals(input)).Value;
             else return null;
         }
 
@@ -50,17 +40,9 @@ namespace ReduxDotNet
             if (inBetwen == input.Target)
                 return index;
             else if (inBetwen > input.Target)
-                return Calculate(new Operation()
-                {
-                    InputArray = input.InputArray.Skip(index).ToList(),
-                    Target = input.Target
-                });
+                return index+Calculate(new Operation(input.Target, input.InputArray.Skip(index).ToList()));
             else
-                return Calculate(new Operation()
-                {
-                    InputArray = input.InputArray.Take(index).ToList(),
-                    Target = input.Target
-                });
+                return index- Calculate(new Operation(input.Target, input.InputArray.Take(index).ToList()));
         }
     }
 }

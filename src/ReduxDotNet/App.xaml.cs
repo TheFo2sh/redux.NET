@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Numerics;
+using System.Reflection;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using Autofac;
+using Autofac.Extras.CommonServiceLocator;
+using Microsoft.Practices.ServiceLocation;
 using MVRX.Core;
+using MVRX.Core.Loaders;
 using ReduxDotNet.Model;
 
 namespace ReduxDotNet
@@ -15,11 +20,7 @@ namespace ReduxDotNet
     /// </summary>
     sealed partial class App : Application
     {
-        public static IStore<BigInteger?> FactorialStore { get; private set; }
-        public static IStore<int?> BinarySearchStore { get; private set; }
 
-        public static IStore<int> CounterStore { get; private set; }
-        public static IStore<User> UserStore { get; private set; }
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -29,14 +30,7 @@ namespace ReduxDotNet
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
-            CounterStore = 
-                new Store<int>(reducer: new CalculatorReducer(),
-                initialState: 0);
-            UserStore =
-             new Store<User>(reducer: new UserProfileReducer(),
-             initialState: new User());
-            FactorialStore=new Store<BigInteger?>(new FibonacciReducer(),0);
-            BinarySearchStore= new Store<int?>(new BinarySearchReducer(), 0);
+
         }
 
         /// <summary>
@@ -46,6 +40,12 @@ namespace ReduxDotNet
         /// <param name="e">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
+            var builder=new ContainerBuilder();
+            builder.RegisterModule(new MainLoader(this.GetType().GetTypeInfo().Assembly));
+            builder.RegisterInstance(new User()).AsSelf().AsImplementedInterfaces().SingleInstance();
+            var container = builder.Build();
+            var csl = new AutofacServiceLocator(container);
+            ServiceLocator.SetLocatorProvider(() => csl);
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
             {

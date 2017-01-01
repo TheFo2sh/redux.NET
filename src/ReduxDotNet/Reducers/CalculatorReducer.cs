@@ -1,6 +1,7 @@
 ﻿using MVRX.Core;
+using ReduxDotNet.Actions;
 
-namespace ReduxDotNet
+namespace ReduxDotNet.Reducers
 {
     public class CalculatorReducer:Reducer<int>
     {

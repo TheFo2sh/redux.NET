@@ -6,38 +6,58 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Autofac;
 using MVRX.Core.Commands;
+using MVRX.Core.ViewModel;
 using Module = Autofac.Module;
 
 namespace MVRX.Core.Loaders
 {
     public class MainLoader:Module
     {
-        private readonly Assembly[] _systemAssemblies;
+        private readonly List<Assembly> _systemAssemblies;
 
         public MainLoader(params Assembly[] systemAssemblies)
         {
-            _systemAssemblies = systemAssemblies;
+            _systemAssemblies = systemAssemblies.ToList();
+            _systemAssemblies.Add(this.GetType().GetTypeInfo().Assembly);
         }
 
         protected override void Load(ContainerBuilder builder)
         {
-            var enumerable = _systemAssemblies.SelectMany(x => x.DefinedTypes.Select(y => y.DeclaringType));
-            builder.RegisterTypes(enumerable.ToArray())
+            builder.RegisterAssemblyTypes(_systemAssemblies.ToArray())
                 .AssignableTo<IStore>()
                 .SingleInstance()
                 .AsSelf()
                 .AsImplementedInterfaces();
 
-            builder.RegisterTypes(enumerable.ToArray())
+            builder.RegisterGeneric(typeof(Store<,>))
+                .As(typeof(IStore<,>))
+                .AsSelf()
+                .SingleInstance();
+
+            builder.RegisterAssemblyTypes(_systemAssemblies.ToArray())
                .AssignableTo<IReducer>()
                .As<IReducer>()
+               .AsSelf()
                .AsImplementedInterfaces();
 
-            builder.RegisterTypes(enumerable.ToArray())
+            builder.RegisterAssemblyTypes(_systemAssemblies.ToArray())
               .AssignableTo<ICommand>()
               .AsClosedTypesOf(typeof(ActionCommand<>))
               .AsImplementedInterfaces();
 
+            builder.RegisterGeneric(typeof(ActionCommand<>))
+                .AsSelf();
+
+            builder.RegisterAssemblyTypes(_systemAssemblies.ToArray())
+              .AssignableTo<IFeature>()
+              .AsSelf()
+              .AsImplementedInterfaces();
+
+            builder.RegisterAssemblyTypes(_systemAssemblies.ToArray())
+              .AssignableTo<BaseViewModel>()
+              .AsSelf()
+              .AsImplementedInterfaces()
+              .PropertiesAutowired();
 
             base.Load(builder);
         }

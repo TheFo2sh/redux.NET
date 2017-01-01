@@ -1,4 +1,5 @@
 ﻿using Windows.UI.Xaml.Controls;
+using Microsoft.Practices.ServiceLocation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -11,7 +12,7 @@ namespace ReduxDotNet
     {
         public MainPage()
         {
-            this.DataContext = new MainPageViewModel();
+            this.DataContext =ServiceLocator.Current.GetInstance<MainPageViewModel>();
 
             this.InitializeComponent();
         }

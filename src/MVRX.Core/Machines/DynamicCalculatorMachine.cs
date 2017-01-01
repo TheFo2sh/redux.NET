@@ -72,6 +72,7 @@ namespace MVRX.Core.Machines
                 throw new InvalidOperationException($"Operation need {iterations} iterations while the maximum iterations number is 1000");
         }
 
+        public abstract T Partion(BigInteger partionSpace, T input);
         public override P Reduce(P previousState, IAction action)
         {
             PostGuard(action);
@@ -81,8 +82,7 @@ namespace MVRX.Core.Machines
             {
                 for (BigInteger j = 1; j < _currentIteration; j += 100)
                 {
-                    T i = (T) (object) j;
-                    Calculate(i);
+                    Calculate(Partion(j, (T)action.Input));
                 }
 
             }

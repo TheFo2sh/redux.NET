@@ -1,17 +1,8 @@
 ﻿using System.Numerics;
 using MVRX.Core;
 
-namespace ReduxDotNet
+namespace ReduxDotNet.Actions
 {
-    public class IncrementAction : IAction
-    {
-        public object Input { get; set; }
-
-        public IncrementAction(string q)
-        {
-            Input = int.Parse(q);
-        }
-    }
     public class CalculateFactorialAction : IAction
     {
         public object Input { get; set; }
@@ -21,7 +12,7 @@ namespace ReduxDotNet
             if (q == null)
                 Input = (BigInteger)0;
             else
-            Input = BigInteger.Parse(q.ToString());
+                Input = BigInteger.Parse(q.ToString());
         }
     }
 }
