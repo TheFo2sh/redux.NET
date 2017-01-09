@@ -24,6 +24,9 @@ namespace MVRX.Core.Loaders
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterAssemblyTypes(_systemAssemblies.ToArray())
+                .AsSelf();
+
+            builder.RegisterAssemblyTypes(_systemAssemblies.ToArray())
                 .AssignableTo<IStore>()
                 .SingleInstance()
                 .AsSelf()
@@ -51,6 +54,7 @@ namespace MVRX.Core.Loaders
             builder.RegisterAssemblyTypes(_systemAssemblies.ToArray())
               .AssignableTo<IFeature>()
               .AsSelf()
+              .Named<IFeature>(x=>x.Name)
               .AsImplementedInterfaces();
 
             builder.RegisterAssemblyTypes(_systemAssemblies.ToArray())

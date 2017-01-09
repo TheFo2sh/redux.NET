@@ -1,5 +1,6 @@
 ﻿using Windows.UI.Xaml.Controls;
 using Microsoft.Practices.ServiceLocation;
+using MVRX.Core.Locators;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -12,7 +13,9 @@ namespace ReduxDotNet
     {
         public MainPage()
         {
-            this.DataContext =ServiceLocator.Current.GetInstance<MainPageViewModel>();
+            dynamic bindableServiceLocator = ServiceLocator.Current.GetInstance<BindableServiceLocator>();
+            var x = bindableServiceLocator.UserManagementFeature;
+            this.DataContext =bindableServiceLocator;
 
             this.InitializeComponent();
         }
