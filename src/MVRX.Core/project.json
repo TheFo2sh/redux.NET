@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0.0-*",
   "description": "MVRX.Core Class Library",
   "authors": [ "Ahmed" ],
@@ -11,9 +11,8 @@
     "Autofac": "4.2.1",
     "CommonServiceLocator": "1.3.0",
     "PropertyChanged.Fody": "1.52.1",
-
-    "Newtonsoft.Json": "9.0.1"
-
+    "Newtonsoft.Json": "9.0.1",
+    "System.Linq": "4.1.0"
   },
   "frameworks": {
   

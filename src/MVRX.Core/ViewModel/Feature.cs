@@ -8,7 +8,7 @@ using MVRX.Core.Commands;
 
 namespace MVRX.Core.ViewModel
 {
-    internal interface IFeature { }
+    public interface IFeature { }
     public class Feature<T>:IFeature
     {
         public bool Enabled { get; set; }

@@ -95,6 +95,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Features\DataQueryFeature.cs" />
     <Compile Include="Reducers\BinarySearchReducer.cs" />
     <Compile Include="Actions\CalculateFactorialAction.cs" />
     <Compile Include="Features\CalculatorFeature.cs" />

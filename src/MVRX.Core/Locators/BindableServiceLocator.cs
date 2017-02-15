@@ -111,7 +111,8 @@ namespace MVRX.Core.Locators
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-            return _componentContext.TryResolveNamed(binder.Name, typeof(IFeature), out result);
+            var tryResolveNamed = _componentContext.TryResolveNamed(binder.Name, typeof(IFeature), out result);
+            return tryResolveNamed;
         }
 
         public bool TryGetValue(string key, out object value)

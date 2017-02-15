@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using Microsoft.Practices.ServiceLocation;
 using MVRX.Core.Locators;
 
@@ -14,10 +16,10 @@ namespace ReduxDotNet
         public MainPage()
         {
             dynamic bindableServiceLocator = ServiceLocator.Current.GetInstance<BindableServiceLocator>();
-            var x = bindableServiceLocator.UserManagementFeature;
             this.DataContext =bindableServiceLocator;
-
             this.InitializeComponent();
         }
+
+       
     }
 }

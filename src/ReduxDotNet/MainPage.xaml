@@ -13,6 +13,7 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
 
         </Grid.ColumnDefinitions>
         <StackPanel DataContext="{Binding CalculatorFeature}"  Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="Beige">
@@ -38,6 +39,23 @@
             <TextBox  Text="{Binding Input , Mode=TwoWay}"></TextBox>
             <Button Command="{Binding SearchAction}" Content="Search" CommandParameter="{Binding SearchOperation}" />
 
+        </StackPanel>
+
+        <StackPanel DataContext="{Binding DataQueryFeature}" x:Name="DataQueyStackPanel" Grid.Column="4" VerticalAlignment="Center">
+            <StackPanel DataContext="{Binding Students}">
+                <StackPanel Orientation="Horizontal">
+                <TextBox  x:Name="Input" ></TextBox>
+                <Button Command="{Binding TextQuery}" Content="Search" CommandParameter="{Binding Text , ElementName=Input}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBox  x:Name="Input2" ></TextBox>
+                    <Button Command="{Binding TextQuery2}" Content="Search2" CommandParameter="{Binding Text , ElementName=Input2}" />
+                </StackPanel>
+                <ComboBox x:Name="ComboBox"  ItemsSource="{Binding SelectedGrade , Mode=OneWay}"></ComboBox>
+                <Button Command="{Binding DataContext.AddCommand , ElementName=DataQueyStackPanel}" Content="Add" ></Button>
+
+                <ListView ItemsSource="{Binding}"></ListView>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Page>
