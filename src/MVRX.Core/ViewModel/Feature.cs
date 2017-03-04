@@ -9,12 +9,13 @@ using MVRX.Core.Commands;
 namespace MVRX.Core.ViewModel
 {
     public interface IFeature { }
-    public class Feature<T>:IFeature
+    public class Feature<T>:IFeature where T :IStore
     {
+        protected T store;
         public bool Enabled { get; set; }
         public Feature()
         {
-            var store = (IStore)ServiceLocator.Current.GetInstance<T>();
+             store = ServiceLocator.Current.GetInstance<T>();
 
             var observableProperites =
                 this.GetType().GetProperties().Where(prop => prop.GetCustomAttribute<ObservableAttribute>() != null);

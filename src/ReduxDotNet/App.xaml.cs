@@ -11,6 +11,7 @@ using Autofac.Extras.CommonServiceLocator;
 using Microsoft.Practices.ServiceLocation;
 using MVRX.Core;
 using MVRX.Core.Loaders;
+using ReduxDotNet.DataSources;
 using ReduxDotNet.Model;
 
 namespace ReduxDotNet
@@ -42,6 +43,7 @@ namespace ReduxDotNet
         {
             var builder=new ContainerBuilder();
             builder.RegisterModule(new MainLoader(this.GetType().GetTypeInfo().Assembly));
+            builder.RegisterModule<StudentDataSource>();
             builder.RegisterInstance(new User()).AsSelf().AsImplementedInterfaces().SingleInstance();
             var container = builder.Build();
             var csl = new AutofacServiceLocator(container);

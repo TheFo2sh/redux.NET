@@ -10,8 +10,11 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MVRX.Core;
 using MVRX.Core.Annotations;
+using MVRX.Core.Commands;
 using MVRX.Core.ViewModel;
 using PropertyChanged;
+using ReduxDotNet.Actions;
+using ReduxDotNet.Reducers;
 
 namespace ReduxDotNet.Features
 {
@@ -31,9 +34,9 @@ namespace ReduxDotNet.Features
             return Name;
         }
     }
-    public class TextQuery : QueryObject<Student>
+    public class TextQuery : QueryObject<Student,StudentsReducer>
     {
-        public TextQuery(DataSource<Student> dataSource) : base("Group1",dataSource)
+        public TextQuery(DataSource<Student, StudentsReducer> dataSource) : base("Group1",dataSource)
         {
         }
 
@@ -42,9 +45,9 @@ namespace ReduxDotNet.Features
             return dataSource.Where(x => x.Name.Contains(Input.ToString()));
         }
     }
-    public class TextQuery2 : QueryObject<Student>
+    public class TextQuery2 : QueryObject<Student, StudentsReducer>
     {
-        public TextQuery2(DataSource<Student> dataSource) : base("Group2",dataSource)
+        public TextQuery2(DataSource<Student, StudentsReducer> dataSource) : base("Group1",dataSource)
         {
         }
 
@@ -54,22 +57,16 @@ namespace ReduxDotNet.Features
         }
     }
     [ImplementPropertyChanged]
-    public class DataQueryFeature :  IFeature
+    public class DataQueryFeature :  Feature<DataSource<Student, StudentsReducer>>
     {
-        public DataSource<Student> Students { get; set; }
-
-        public ICommand AddCommand => new RelayCommand(() => Students.Add(new Student("Ons", "P")));
-
+        public DataSource<Student, StudentsReducer> Students => this.store;
+        [Action(true)]
+        public ActionCommand<AddToListAction> AddToListAction { get; set; }
         public DataQueryFeature()
         {
-
-            Students = new DataSource<Student>(source => true,
-                () => new List<Student>() {
-                    new Student("Ahmed","A"),
-                    new Student("Kmar","A++"),
-                    new Student("Amr","C")});
-            Students.AddQuery(new TextQuery(Students));
-            Students.AddQuery(new TextQuery2(Students));
+            
+            this.store.AddQuery(new TextQuery(this.store));
+            this.store.AddQuery(new TextQuery2(this.store));
            
         }
 

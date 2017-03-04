@@ -1,8 +1,29 @@
-﻿using MVRX.Core;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using MVRX.Core;
 using ReduxDotNet.Actions;
+using ReduxDotNet.Features;
 
 namespace ReduxDotNet.Reducers
 {
+    public class StudentsReducer : Reducer<ObservableCollection<Student>>
+    {
+        public override ObservableCollection<Student> Reduce(ObservableCollection<Student> previousState, IAction action)
+        {
+            if (action is AddToListAction)
+            {
+                previousState.Add(new Student("Onss", "Q"));
+            }
+            return previousState;
+
+        }
+
+        public override bool Validate(ObservableCollection<Student> previousState, ObservableCollection<Student> newState, IAction action)
+        {
+            return newState.Count<6;
+        }
+    }
     public class CalculatorReducer:Reducer<int>
     {
        

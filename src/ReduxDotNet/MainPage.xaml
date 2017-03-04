@@ -52,7 +52,7 @@
                     <Button Command="{Binding TextQuery2}" Content="Search2" CommandParameter="{Binding Text , ElementName=Input2}" />
                 </StackPanel>
                 <ComboBox x:Name="ComboBox"  ItemsSource="{Binding SelectedGrade , Mode=OneWay}"></ComboBox>
-                <Button Command="{Binding DataContext.AddCommand , ElementName=DataQueyStackPanel}" Content="Add" ></Button>
+                <Button Command="{Binding DataContext.AddToListAction , ElementName=DataQueyStackPanel}" Content="Add" ></Button>
 
                 <ListView ItemsSource="{Binding}"></ListView>
             </StackPanel>

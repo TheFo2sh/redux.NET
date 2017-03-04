@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace MVRX.Core
 {
-    public abstract class QueryObject<T>:ICommand
+    public abstract class QueryObject<T,TP>:ICommand where TP : Reducer<ObservableCollection<T>>
     {
-        private readonly DataSource<T> _dataSource;
+        private readonly DataSource<T,TP> _dataSource;
         private  object _input;
         public string GroupName { get; private set; }
 
@@ -26,7 +27,7 @@ namespace MVRX.Core
         }
 
         public abstract IEnumerable<T> Query( List<T> dataSource);
-        protected QueryObject(string groupname,DataSource<T> dataSource)
+        protected QueryObject(string groupname,DataSource<T,TP> dataSource)
         {
             GroupName = groupname;
             _dataSource = dataSource;

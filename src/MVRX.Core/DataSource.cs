@@ -9,41 +9,51 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Sockets;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using Microsoft.Practices.ServiceLocation;
+using MVRX.Core.Commands;
 
 namespace MVRX.Core
 {
-    public class DataSource<T> : ObservableCollection<T>,
-        IDisposable, IDictionary<string, object>, INotifyPropertyChanged
+    public class DataSource<TState, TReducer> : ObservableCollection<TState>,
+        IDisposable, IDictionary<string, object>, IStore<ObservableCollection<TState>, TReducer> where TReducer : Reducer<ObservableCollection<TState>>
 
     {
+        private readonly object _syncRoot = new object();
+        private readonly IList<IActionCommand> _actionCommands;
 
         private readonly IDictionary<string, object> _dictionaryImplementation;
-        public IEnumerable<T> Data { get; set; }
+        public IEnumerable<TState> Data { get; set; }
+        private readonly ReplaySubject<ObservableCollection<TState>> _stateSubject = new ReplaySubject<ObservableCollection<TState>>(1);
 
-        public virtual void Insert(T item)
+        public virtual void Insert(TState item)
         {
         }
 
-        public virtual void Delete(T item)
+        public virtual void Delete(TState item)
         {
         }
 
+        private readonly Dispatcher _dispatcher;
+        private readonly TReducer _reducer;
+        public Predicate<DataSource<TState, TReducer>> AvailabilityPredicate { get; set; }
 
-        public Predicate<DataSource<T>> AvailabilityPredicate { get; set; }
-
-        public DataSource(Predicate<DataSource<T>> availabilityPredicate, Func<IEnumerable<T>> dataFunc) :
+        public DataSource(Predicate<DataSource<TState, TReducer>> availabilityPredicate, Func<IEnumerable<TState>> dataFunc) :
             base(dataFunc.Invoke())
         {
             this.AvailabilityPredicate = availabilityPredicate;
             _dictionaryImplementation = new Dictionary<string, object>();
             dependentProperties = new List<string>();
             this.CollectionChanged += OnCollectionChanged;
-            activeQuerys = new List<QueryObject<T>>();
-            Data = this.ToList<T>();
+            activeQuerys = new List<QueryObject<TState,TReducer>>();
+            Data = this.ToList<TState>();
+            _dispatcher = InnerDispatch;
+            _reducer = ServiceLocator.Current.GetInstance<TReducer>();
+            _actionCommands=new List<IActionCommand>();
         }
 
         private void OnCollectionChanged(object sender,
@@ -54,8 +64,8 @@ namespace MVRX.Core
             if (IsSilent)
                 return;
 
-            var newItems = notifyCollectionChangedEventArgs.NewItems?.Cast<T>()?.ToList() ?? new List<T>();
-            var oldItems = notifyCollectionChangedEventArgs.OldItems?.Cast<T>()?.ToList() ?? new List<T>();
+            var newItems = notifyCollectionChangedEventArgs.NewItems?.Cast<TState>()?.ToList() ?? new List<TState>();
+            var oldItems = notifyCollectionChangedEventArgs.OldItems?.Cast<TState>()?.ToList() ?? new List<TState>();
 
             switch (notifyCollectionChangedEventArgs.Action)
             {
@@ -83,15 +93,15 @@ namespace MVRX.Core
         }
 
 
-        private readonly List<QueryObject<T>> activeQuerys;
-        public List<QueryObject<T>> Queries { get; set; }
+        private readonly List<QueryObject<TState,TReducer>> activeQuerys;
+        public List<QueryObject<TState,TReducer>> Queries { get; set; }
 
-        public void AddQuery(QueryObject<T> queryObject)
+        public void AddQuery(QueryObject<TState,TReducer> queryObject)
         {
             _dictionaryImplementation.Add(queryObject.GetType().Name, queryObject);
         }
 
-        public void ExcuteFilter(QueryObject<T> queryObject)
+        public void ExcuteFilter(QueryObject<TState,TReducer> queryObject)
         {
             if (activeQuerys.LastOrDefault()?.GroupName != queryObject.GroupName)
                 activeQuerys.Clear();
@@ -218,10 +228,10 @@ namespace MVRX.Core
             var key = originalKey;
             if (key.ToLower().StartsWith("selected"))
             {
-                dataSource = this.ToList<T>();
+                dataSource = this.ToList<TState>();
                 key = key.Remove(0, 8);
             }
-            var property = typeof(T).GetProperty(key);
+            var property = typeof(TState).GetProperty(key);
             try
             {
                 if (property == null)
@@ -243,6 +253,7 @@ namespace MVRX.Core
             }
         }
 
+       
         public object this[string key]
         {
             get
@@ -267,6 +278,90 @@ namespace MVRX.Core
             get { return _dictionaryImplementation.Values; }
         }
 
+        public void VariableSubscribe(Action<object> obj)
+        {
+            this.Subscribe(s => obj.Invoke(s));
+        }
+
+        public IAction Dispatch(IAction action)
+        {
+            return _dispatcher.Invoke(action);
+        }
+
+        public bool IsValid(IAction action)
+        {
+            try
+            {
+                
+                var newState = _reducer.Reduce(new ObservableCollection<TState>(Data), action);
+                return _reducer.Validate(new ObservableCollection<TState>(Data), newState, action);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        private ObservableCollection<TState> CreateObservableDataObject()
+        {
+            var ObservableDataObject = new ObservableCollection<TState>(Data);
+            ObservableDataObject.CollectionChanged += (sender, args) =>
+            {
+
+                foreach (var argsNewItem in args.NewItems.Cast<TState>())
+                {
+                    if (args.Action == NotifyCollectionChangedAction.Add)
+                        this.Add(argsNewItem);
+                    else if (args.Action == NotifyCollectionChangedAction.Remove)
+                        this.Remove(argsNewItem);
+                }
+
+
+
+            };
+            return ObservableDataObject;
+        }
+
+        public void WatchCommand(IActionCommand command)
+        {
+            command.RefreshState();
+            _actionCommands.Add(command);
+        }
+
+        public IDisposable Subscribe(IObserver<ObservableCollection<TState>> observer)
+        {
+            return _stateSubject
+               .Subscribe(observer);
+        }
+
+        public ObservableCollection<TState> GetState()
+        {
+            return this;
+        }
+
+        private IAction InnerDispatch(IAction action)
+        {
+
+            try
+            {
+                lock (_syncRoot)
+                {
+                    Data = _reducer.Reduce(CreateObservableDataObject(), action);
+                   
+                }
+                _stateSubject.OnNext(CreateObservableDataObject());
+
+                foreach (var actionCommand in _actionCommands)
+                {
+                    actionCommand.RefreshState();
+                }
+            }
+            catch (Exception ex)
+            {
+                _stateSubject.OnError(ex);
+            }
+            return action;
+        }
 
     }
 }
