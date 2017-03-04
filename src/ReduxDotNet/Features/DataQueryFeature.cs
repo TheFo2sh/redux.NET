@@ -57,9 +57,9 @@ namespace ReduxDotNet.Features
         }
     }
     [ImplementPropertyChanged]
-    public class DataQueryFeature :  Feature<DataSource<Student, StudentsReducer>>
+    public class DataQueryFeature :  Feature<AsyncDataSource<Student, StudentsReducer>>
     {
-        public DataSource<Student, StudentsReducer> Students => this.store;
+        public AsyncDataSource<Student, StudentsReducer> Students => this.store;
         [Action(true)]
         public ActionCommand<AddToListAction> AddToListAction { get; set; }
         public DataQueryFeature()

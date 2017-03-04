@@ -19,6 +19,20 @@ using MVRX.Core.Commands;
 
 namespace MVRX.Core
 {
+    public class AsyncDataSource<TState, TReducer> : DataSource<TState, TReducer> where TReducer : Reducer<ObservableCollection<TState>>
+    {
+        public AsyncDataSource(Predicate<DataSource<TState, TReducer>> availabilityPredicate,
+       Task<IEnumerable<TState>> dataFunc):base(availabilityPredicate,(() => new List<TState>()))
+        {
+            dataFunc.ContinueWith(task =>
+            {
+                foreach (var state in task.Result)
+                {
+                    this.Add(state);
+                }
+            });
+        }
+    }
     public class DataSource<TState, TReducer> : ObservableCollection<TState>,
         IDisposable, IDictionary<string, object>, IStore<ObservableCollection<TState>, TReducer> where TReducer : Reducer<ObservableCollection<TState>>
 
@@ -42,6 +56,7 @@ namespace MVRX.Core
         private readonly TReducer _reducer;
         public Predicate<DataSource<TState, TReducer>> AvailabilityPredicate { get; set; }
 
+   
         public DataSource(Predicate<DataSource<TState, TReducer>> availabilityPredicate, Func<IEnumerable<TState>> dataFunc) :
             base(dataFunc.Invoke())
         {
